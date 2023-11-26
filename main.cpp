@@ -1,110 +1,74 @@
 #include <iostream>
-#include <string>
-#include <cassert>
+#include <vector>
+#include "Warrior.h"
+#include "Wizard.h"
+#include "WarriorWizard.h"
+#include "NPC.h"
+#include "Plant.h"
+#include "WizardThrong.h"
 
-using namespace std;
+int main() {
+    // Erstellen der Charaktere
+    Warrior warrior1("Conan", 100, 50);
+    Warrior warrior2("Xena", 90, 45);
+    Wizard wizard1("Gandalf", 100, 300);
+    Wizard wizard2("Merlin", 80, 250);
+    NPC npc("Goblin", 30, true);
+    Plant plant("Tree", 10);
 
-/**
- * Structure describing a bank account with bank account number and amount
- */
-struct BankAccount {
-    string iban;
-    double amount;
+    // Demonstration des Kampfes zwischen Kriegern
+    std::cout << "Kampf: " << warrior1.getName() << " vs " << warrior2.getName() << std::endl;
+    warrior1 >> warrior2;
+    std::cout << warrior1 << std::endl;
+    std::cout << warrior2 << std::endl;
 
-    // a) deposit money
-    BankAccount& operator<<(double deposit) {
-        assert(deposit >= 0); // Deposit should be non-negative
-        amount += deposit;
-        return *this;
-    }
+    // Demonstration des Kampfes zwischen Magiern
+    std::cout << "Duell der Magier: " << wizard1.getName() << " vs " << wizard2.getName() << std::endl;
+    wizard1 >> wizard2;
 
-    // b) transfer money
-    BankAccount& operator<<(BankAccount& other) {
-        assert(other.amount > 0); // Other account should have a positive amount
-        this->amount += other.amount;
-        other.amount = 0;
-        return *this;
-    }
+    // Warrior gegen NPC
+    std::cout << "Kampf: " << warrior1.getName() << " vs NPC" << std::endl;
+    warrior1 >> npc;
+    std::cout << warrior1 << std::endl;
+    std::cout << "NPC Energie: " << npc.getEnergy() << std::endl;
 
-    // c) Reset account
-    void operator~() {
-        amount = 0;
-    }
+    // Wizard gegen Warrior
+    std::cout << "Magischer Angriff: " << wizard1.getName() << " vs " << warrior1.getName() << std::endl;
+    wizard1 >> warrior1;
+    std::cout << warrior1 << std::endl;
 
-    // d) create a joint account
-    BankAccount operator|(const BankAccount& other) const {
-        return BankAccount{"Joint account: ", this->amount + other.amount};
-    }
+    // Erstellen einer Gruppe von Magiern (WizardThrong)
+    WizardThrong throng1, throng2;
+    throng1.addWizard(wizard1);
+    throng2.addWizard(wizard2);
 
-    // e) compare
-    bool operator<(const BankAccount& other) const {
-        return this->amount < other.amount;
-    }
+    // Kombination der Magiergruppen zu einem mächtigen Magier
+    std::cout << "Zusammenführung der Magiergruppen..." << std::endl;
+    Wizard combinedWizard = throng1 | throng2;
+    std::cout << "Der neue Magier: " << combinedWizard.getName() << ", Mana: " << combinedWizard.getMana() << ", Energie: " << combinedWizard.getEnergy() << std::endl;
 
-    bool operator>(const BankAccount& other) const {
-        return this->amount > other.amount;
-    }
+    // Abschließende Auseinandersetzung
+    std::cout << "\n=== Abschließende Auseinandersetzung ===" << std::endl;
 
-    bool operator==(const BankAccount& other) const {
-        return this->amount == other.amount && this->iban == other.iban;
-    }
+    // Der mächtige Magier trifft auf die verbliebenen Krieger
+    std::cout << "Der mächtige Magier " << combinedWizard.getName() << " trifft auf die Krieger " << warrior1.getName() << " und " << warrior2.getName() << std::endl;
+    combinedWizard >> warrior1;
+    combinedWizard >> warrior2;
 
-    // f) add zinsen
-    BankAccount& operator*=(double interestRate) {
-        assert(interestRate >= 0);
-        amount *= (1 + interestRate);
-        return *this;
-    }
-};
+    // Ausgabe der finalen Zustände
+    std::cout << warrior1 << std::endl;
+    std::cout << warrior2 << std::endl;
 
-// g) acc with max balance
-BankAccount& getMax(BankAccount& a, BankAccount& b) {
-    return (a.amount >= b.amount) ? a : b;
-}
+    // Finale Konfrontation zwischen den Kriegern
+    std::cout << "\nFinale Konfrontation zwischen den Kriegern:" << std::endl;
+    warrior1 >> warrior2;
+    warrior2 >> warrior1;
 
-/**
- * Prints bank account
- */
-void printBankAccount(const BankAccount& account) {
-    cout << account.iban << " (" << account.amount << " EUR)" << endl;
-}
+    // Endzustände ausgeben
+    std::cout << warrior1 << std::endl;
+    std::cout << warrior2 << std::endl;
 
-/**
- * Main program
- */
-int main(int argc, const char * argv[]) {
-    BankAccount accountA{"ACC 1", 1000.0};
-    BankAccount accountB{"ACC 2", 2000.0};
-    BankAccount accountC{"ACC 3", 1500.0};
-
-    // tests
-    accountA << 500.0; // deposit
-    printBankAccount(accountA);
-
-    accountA << accountB; // transfer
-    printBankAccount(accountA);
-    printBankAccount(accountB);
-
-    ~accountC; // reset
-    printBankAccount(accountC);
-
-    BankAccount jointAccount = accountA | accountC; // joint acc
-    printBankAccount(jointAccount);
-
-    // compare accs
-    cout << boolalpha; //iostream function für true oder false instead of 1 oder 0
-
-    cout << (accountA < accountB) << endl;
-    cout << (accountA > accountC) << endl;
-    cout << (accountA == accountC) << endl;
-
-    // interest
-    accountA *= 0.05;
-    printBankAccount(accountA);
-
-    // get max acc
-    BankAccount& maxAccount = getMax(accountA, accountC);
-    printBankAccount(maxAccount);
+    std::cout << "\nDas Ende des großen Kampfes. Die Legenden leben weiter in den Geschichten." << std::endl;
 
     return 0;
 }
