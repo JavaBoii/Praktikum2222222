@@ -1,0 +1,52 @@
+
+a) Fehler in `MyFruit` Klasse
+Fehler: Die Mitgliedsvariablen `m_name` und `m_calories` sind als `const` deklariert, was bedeutet, dass sie nicht nach ihrer Initialisierung geändert werden können. Der Konstruktor versucht jedoch, sie zu setzen, was nicht zulässig ist.
+
+Lösung:
+MyFruit::MyFruit(std::string name, float calories)
+: m_name(name), m_calories(calories) {}
+
+
+b) Fehler in `Address` Klasse
+Fehler: Das Mitglied `m_city` in der `Address`-Klasse wird im Konstruktor nicht korrekt initialisiert. Stattdessen wird es später in der Konstruktor-Implementierung zugewiesen.
+
+Lösung:
+Address::Address(std::string street, int houseNumber, std::string city, std::string zipCode)
+: m_street(street), m_houseNumber(houseNumber), m_city(city, zipCode) {}
+
+
+c) Fehler in `Bunny` Klasse
+Fehler: Die Variable `bunny` wird als `const` deklariert, was bedeutet, dass ihre Daten nicht verändert werden können. Jedoch hat die Methode `getNumberOfEars()` kein `const`-Qualifizierer.
+
+Lösung:
+int getNumberOfEars() const {
+    return m_numberOfEars;
+}
+
+
+d) Fehler in `ArrayVector` Klasse
+Fehler: Das Objekt `v` ist als `const` deklariert, was bedeutet, dass keine seiner Daten verändert werden können. Der Operator `[]` gibt jedoch eine Referenz auf ein veränderbares `double` zurück, was im Widerspruch dazu steht.
+
+Lösung:
+double operator[](const int& index) const {
+    return v[index];
+}
+
+
+e) Fehler in `Person` Klasse
+Fehler: Die Methode `setName` hat den `const`-Qualifizierer, aber sie versucht, die Variable `m_name` zu verändern, was in einem `const` Kontext nicht zulässig ist.
+
+Lösung:
+void setName(std::string name) {
+    m_name = name;
+}
+
+
+f) Fehler im Umgang mit `std::unique_ptr`
+Fehler: Nachdem `p` auf `p2` verschoben wurde, ist `p` null und der Versuch, `*p` zu dereferenzieren, führt zu einem Laufzeitfehler.
+
+Lösung: Entfernen Sie den Versuch, `*p` zu dereferenzieren, da dieser nach der Verschiebung null ist.
+std::cout << *p2 << std::endl; // Entfernen Sie std::cout << *p << std::endl;
+
+
+Diese Lösungen beheben die identifizierten Fehler in jedem Codeausschnitt.
